@@ -3,16 +3,19 @@ from rest_framework import status
 from bookmarks.models import Bookmark
 from bookmarks.serializers import BookmarkSerializer
 from rest_framework.decorators import api_view
+from urllib.parse import unquote 
 
 
-def _get_bookmark(url):
+def _get_bookmark(encoded_url):
+    url = unquote(encoded_url)
+    print(url)
     bookmark = Bookmark.objects.get(url=url)
     return bookmark
 
 @api_view(['GET', 'POST'])
 def bookmarks_list(request):
     """
-         API EndPoint for listing all avaiable bookmarks or creating a new Bookmark
+         API EndPoint for listing all available bookmarks or creating a new Bookmark
     
     """
 
@@ -31,13 +34,13 @@ def bookmarks_list(request):
 
 
 @api_view(['GET', 'DELETE', 'PUT'])
-def bookmark_controller(request, url):
+def bookmark_controller(request, encoded_url):
     """
-        API for handling CRUD actions for bookmarks
+        API for handling CRUD actions on bookmarks
     
     """
     try: 
-       bookmark =  _get_bookmark(url=url)
+       bookmark =  _get_bookmark(encoded_url)
     except Bookmark.DoesNotExist:
         return Response("requested Bookmark was not found")
 
