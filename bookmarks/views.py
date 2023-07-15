@@ -5,10 +5,10 @@ from bookmarks.serializers import BookmarkSerializer
 from rest_framework.decorators import api_view
 from urllib.parse import unquote 
 
+from bookmarks.tags.IntelligentTagger import IntelligentTagger
 
 def _get_bookmark(encoded_url):
     url = unquote(encoded_url)
-    print(url)
     bookmark = Bookmark.objects.get(url=url)
     return bookmark
 
@@ -59,4 +59,13 @@ def bookmark_controller(request, encoded_url):
         bookmark.delete()
         serializer = BookmarkSerializer(bookmark)
         return Response(serializer.data)
+
+
+@api_view(['GET'])
+def tags(request):
+    url = request.query_params['url']
+    tagger = IntelligentTagger()
+    tags = tagger.extract(url)
+    tags_serializable = [tag._asdict() for tag in tags]
+    return Response(tags_serializable)
 
