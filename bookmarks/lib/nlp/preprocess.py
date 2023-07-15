@@ -1,4 +1,7 @@
-def preprocess_text(text):
+import nltk
+nltk.download('punkt')
+
+def tokenize_into_paragraphs(text):
     # Split text into lines
     lines = text.splitlines()
     
@@ -19,3 +22,11 @@ def preprocess_text(text):
         paragraphs.append(" ".join(current_paragraph))
     
     return paragraphs
+def tokenize_into_sentences(text):
+    sentences = nltk.sent_tokenize(text)
+    combined_sentences = []
+    for i,_ in enumerate(sentences):
+        if i % 3 == 0 and i+2 < len(sentences):
+            combined_sentences.append(' '.join([sentences[i], sentences[i+1], sentences[i+2]]))
+
+    return combined_sentences

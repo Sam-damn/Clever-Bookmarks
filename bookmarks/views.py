@@ -63,9 +63,13 @@ def bookmark_controller(request, encoded_url):
 
 @api_view(['GET'])
 def tags(request):
+
     url = request.query_params['url']
+    tokenize = True if int(request.GET.get("tokenize")) == 1 else False
+
     tagger = IntelligentTagger()
-    tags = tagger.extract(url)
+    tags = tagger.extract(url, tokenize=tokenize)
     tags_serializable = [tag._asdict() for tag in tags]
+
     return Response(tags_serializable)
 
